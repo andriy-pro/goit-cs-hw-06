@@ -34,7 +34,14 @@ TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 # HTTP Handler
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
-    """HTTP-обробник запитів з методами GET та POST."""
+    """
+    HTTP-обробник для обробки веб-запитів.
+
+    Підтримує:
+    - GET запити для відображення сторінок
+    - POST запити для обробки повідомлень
+    - Відправку статичних файлів
+    """
 
     def do_GET(self):
         """Обробляє GET-запити від клієнта."""
@@ -121,14 +128,19 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 # Threading HTTP Server
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-    """Багатопотоковий HTTP-сервер для обробки запитів."""
+    """Багатопотоковий HTTP-сервер для паралельної обробки запитів."""
 
-    pass
+    daemon_threads = True  # Додаємо для автоматичного завершення потоків
 
 
 # Socket Server
 def run_socket_server():
-    """Запускає сокет-сервер для отримання повідомлень та збереження їх у MongoDB."""
+    """
+    Запускає сокет-сервер для обробки повідомлень.
+
+    Створює підключення до MongoDB та очікує на вхідні повідомлення.
+    Кожне повідомлення обробляється в окремому потоці.
+    """
     try:
         client = MongoClient(MONGO_URI)
         db = client[DB_NAME]
@@ -151,7 +163,14 @@ def run_socket_server():
 
 # Handle socket connections
 def handle_socket_connection(conn, addr, collection):
-    """Обробляє з'єднання сокет-сервера з клієнтом."""
+    """
+    Обробляє вхідне сокет-з'єднання.
+
+    Параметри:
+        conn: Об'єкт з'єднання сокета
+        addr: Адреса клієнта
+        collection: Колекція MongoDB для збереження повідомлень
+    """
     try:
         data = conn.recv(1024)
         if data:
