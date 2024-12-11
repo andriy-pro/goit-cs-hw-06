@@ -1,10 +1,11 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY src/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copy entire source code first
 COPY src/ /app/
+
+# Install requirements
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "main.py"]
